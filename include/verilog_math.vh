@@ -104,6 +104,19 @@ generate\
 for (__random_width_clk_i = 0; __random_width_clk_i < width >> 5; __random_width_clk_i = __random_width_clk_i + 1)\
 always @ (posedge clk)\
 #delay f[32*(__random_width_clk_i+1)-1:32*__random_width_clk_i] = $random;\
-always @ (posedge clk)\
-#delay f[width-1:32*(width>>5)] = $random;\
+//if ( (width - width / 2) != 0 ) begin\
+    always @ (posedge clk)\
+    #delay f[width-1:32*(width>>5)] = $random;\
+    //end\
 endgenerate
+
+// Macro to generate random inputs to a variable after some time of the clock
+// edge.
+//   f:     output
+//   clk:   clock
+//   delay: time after clk posedge when f changes
+`define RANDOM_OFFSET(f, clk, delay) \
+always @ ( posedge clk ) begin\
+    #delay f = $random;\
+end
+
